@@ -20,10 +20,10 @@ server {
   # Add index.php to the list if you are using PHP
   index index.html index.htm index.nginx-debian.html index.php;
   
-  # ATTENTION: __STATIC_FOLDER_PATH__
+  # ATTENTION: /__STATIC_FOLDER_PATH__
   location /static {
     autoindex on;
-    alias __STATIC_FOLDER_PATH__;
+    alias /__STATIC_FOLDER_PATH__;
   }
 
   # ATTENTION: __MEDIA_FOLDER_PATH__ 
@@ -79,3 +79,6 @@ server {
   #access_log  /var/log/nginx/____REPLACE_ME_WITH_YOUR_OWN_DOMAIN____-access.log;
   error_log   /var/log/nginx/____REPLACE_ME_WITH_YOUR_OWN_DOMAIN____-error.log;
 }
+
+# criando o link simbolico entres os diretorios
+sudo ln -s /etc/nginx/sites-available/'dir' /etc/nginx/sites-enabled/'dir'
