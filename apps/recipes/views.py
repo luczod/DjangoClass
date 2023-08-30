@@ -132,16 +132,26 @@ class RecipeDetail(DetailView):
         return ctx
 
 
-class RecipeDetailApi(DetailView):
-    template_name = 'recipes/pages/home.html'
-
+class RecipeDetailAPI(RecipeDetail):
     def render_to_response(self, context, **response_kwargs):
         recipe = self.get_context_data()['recipe']
-        recipes_dict = model_to_dict(recipe)
+        recipe_dict = model_to_dict(recipe)
+
+        recipe_dict['created_at'] = str(recipe.created_at)[:19]
+        recipe_dict['updated_at'] = str(recipe.updated_at)[:19]
+
+        if recipe_dict.get('cover'):
+            recipe_dict['cover'] = self.request.build_absolute_uri()[:22] + \
+                recipe_dict['cover'].url[1:]
+        else:
+            recipe_dict['cover'] = ''
+
+        del recipe_dict['is_published']
+        del recipe_dict['preparation_steps_is_html']
 
         return JsonResponse(
-            recipes_dict,
-            safe=False
+            recipe_dict,
+            safe=False,
         )
 
 
