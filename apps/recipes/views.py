@@ -1,5 +1,8 @@
 # from utis.recipes.factory import make_recipe
 import os
+from typing import Any, Dict
+from django.forms.models import model_to_dict
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from django.http.response import Http404
@@ -41,6 +44,20 @@ class RecipeListViewBase(ListView):
 
 class RecipeListViewHome(RecipeListViewBase):
     template_name = 'recipes/pages/home.html'
+
+
+class RecipeListViewHomeApi(RecipeListViewBase):
+    template_name = 'recipes/pages/home.html'
+
+    def render_to_response(self, context: Dict[str, Any],
+                           **response_kwargs: Any):
+        recipes = self.get_context_data()['recipes']
+        recipes_list = recipes.object_list.values()
+
+        return JsonResponse(
+            list(recipes_list),
+            safe=False
+        )
 
 
 class RecipeListViewCategory(RecipeListViewBase):
@@ -113,6 +130,19 @@ class RecipeDetail(DetailView):
         })
 
         return ctx
+
+
+class RecipeDetailApi(DetailView):
+    template_name = 'recipes/pages/home.html'
+
+    def render_to_response(self, context, **response_kwargs):
+        recipe = self.get_context_data()['recipe']
+        recipes_dict = model_to_dict(recipe)
+
+        return JsonResponse(
+            recipes_dict,
+            safe=False
+        )
 
 
 def recipe(request, id):
