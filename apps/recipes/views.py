@@ -31,7 +31,7 @@ def theory(request, *args, **kwargs):
          )
      )[:10] """
 
-    recipes = Recipe.objects.values('id', 'title', 'author__username')
+    recipes = Recipe.objects.values('id', 'title', 'author__username')[:10]
     # make other sql query
     # print(recipes[0])
 
