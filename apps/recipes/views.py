@@ -3,6 +3,7 @@ import os
 from typing import Any, Dict
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
+# from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from django.http.response import Http404
@@ -13,14 +14,26 @@ from .models import Recipe
 
 PER_PAGE = int(os.environ.get('PER_PAGE', 6))
 
-# Create your views here.
-
 
 def theory(request, *args, **kwargs):
-    recipes = Recipe.objects.all()
-    recipes = recipes.filter(title__icontains='milkshake').first()
+    """  try:
+         recipes = Recipe.objects.get(pk=10000)
+     except ObjectDoesNotExist:
+         recipes = None
+     recipes = Recipe.objects.filter(
+         Q(
+             Q(title__icontains='da',
+               id__gt=2,
+               is_published=True,) |
+             Q(
+                 id__gt=1000
+             )
+         )
+     )[:10] """
 
-    print(recipes)
+    recipes = Recipe.objects.values('id', 'title', 'author__username')
+    # make other sql query
+    # print(recipes[0])
 
     context = {
         'recipes': recipes
