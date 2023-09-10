@@ -6,6 +6,7 @@ app_name = 'recipes'
 
 urlpatterns = [
     path('', views.RecipeListViewHome.as_view(), name="home"),  # Home
+    path('theory', views.theory, name="theory"),
     path(
         'recipes/api/v1/',
         views.RecipeListViewHomeApi.as_view(),

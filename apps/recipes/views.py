@@ -16,6 +16,18 @@ PER_PAGE = int(os.environ.get('PER_PAGE', 6))
 # Create your views here.
 
 
+def theory(request, *args, **kwargs):
+    recipes = Recipe.objects.all()
+    recipes = recipes.filter(title__icontains='milkshake').first()
+
+    print(recipes)
+
+    context = {
+        'recipes': recipes
+    }
+    return render(request, 'recipes/pages/theory.html', context=context)
+
+
 class RecipeListViewBase(ListView):
     model = Recipe
     context_object_name = 'recipes'
