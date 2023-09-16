@@ -1,11 +1,17 @@
+from tag.models import Tag
 from django.contrib import admin
 from .models import Category, Recipe
-
-# Register your models here for hander in admin page
+from django.contrib.contenttypes.admin import GenericStackedInline
 
 
 class CategoryAdmin(admin.ModelAdmin):
     ...
+
+
+class TagInline(GenericStackedInline):
+    model = Tag
+    fields = 'name',
+    extra = 1
 
 
 @admin.register(Recipe)  # decorator
@@ -21,6 +27,10 @@ class RecipeAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         "slug": ('title',)
     }
+
+    inlines = [
+        TagInline,
+    ]
 
 
 admin.site.register(Category, CategoryAdmin)

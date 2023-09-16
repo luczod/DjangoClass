@@ -8,6 +8,7 @@ from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from django.http.response import Http404
 from django.views.generic import DetailView, ListView
+from tag.models import Tag
 from utils.pagination import make_pagination
 # from django.contrib import messages
 from .models import Recipe
@@ -60,6 +61,7 @@ class RecipeListViewBase(ListView):
         # join in tables recipe,author and category to avoid n+1
         qs = qs.select_related('author', 'category')
         # in case many to many
+        qs = qs.prefetch_related('tags')
         # qs = qs.prefetch_related('author', 'category')
         return qs
 
@@ -142,6 +144,31 @@ class RecipeListViewSearch(RecipeListViewBase):
             'page_title': f'Search for "{search_term}" |',
             'search_term': search_term,
             'additional_url_query': f'&q={search_term}',
+        })
+
+        return ctx
+
+
+class RecipeListViewTag(RecipeListViewBase):
+    template_name = 'recipes/pages/tag.html'
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        qs = qs.filter(tags__slug=self.kwargs.get('slug', ''))
+        return qs
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        page_title = Tag.objects.filter(
+            slug=self.kwargs.get('slug', '')).first()
+
+        if not page_title:
+            page_title = 'No recipes found'
+
+        page_title = f'{page_title} - Tag |'
+
+        ctx.update({
+            'page_title': page_title,
         })
 
         return ctx
