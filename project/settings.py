@@ -14,6 +14,10 @@ import sys
 from pathlib import Path
 from django.contrib.messages import constants
 
+if os.environ.get('DEBUG', None) is None:
+    from dotenv import load_dotenv
+    load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
@@ -26,8 +30,8 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 SECRET_KEY = os.environ.get('SECRET_KEY', 'INSECURE')  # noqa: E501
 
 # SECURITY WARNING: don't run with debug turned on in production!
-
 DEBUG = True if os.environ.get('DEBUG') == '1' else False
+print(DEBUG)
 
 ALLOWED_HOSTS: list[str] = []
 
