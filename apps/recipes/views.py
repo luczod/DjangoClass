@@ -11,6 +11,8 @@ from django.views.generic import DetailView, ListView
 from utils.pagination import make_pagination
 # from django.contrib import messages
 from .models import Recipe
+from django.db.models.aggregates import Count
+
 
 PER_PAGE = int(os.environ.get('PER_PAGE', 6))
 
@@ -30,13 +32,16 @@ def theory(request, *args, **kwargs):
              )
          )
      )[:10] """
+    # recipes = Recipe.objects.values('id', 'title', 'author__username')[:10]
+    recipes = Recipe.objects.get_published()
+    number_of_recipes = recipes.aggregate(number=Count('id'))
 
-    recipes = Recipe.objects.values('id', 'title', 'author__username')[:10]
     # make other sql query
     # print(recipes[0])
 
     context = {
-        'recipes': recipes
+        'recipes': recipes,
+        'number_of_recipes': number_of_recipes['number']
     }
     return render(request, 'recipes/pages/theory.html', context=context)
 

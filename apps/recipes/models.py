@@ -3,6 +3,10 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.auth.models import User
 
+
+from django.db.models import F,  Value
+from django.db.models.functions import Concat
+
 # Create your models here.
 # python manage.py makemigrations
 # python manage.py migrate
@@ -16,7 +20,23 @@ class Category(models.Model):
         return self.name
 
 
+class RecipeManager(models.Manager):
+    # add new personal function to the objects
+    def get_published(self):
+        return self.filter(
+            is_published=True
+        ).annotate(
+            author_full_name=Concat(
+                F('author__first_name'), Value(' '),
+                F('author__last_name'), Value(' ('),
+                F('author__username'), Value(')'),
+            )
+        ).order_by('-id')[:100]
+
+
 class Recipe(models.Model):
+    # add new personal objects Manager to class
+    objects = RecipeManager()
     title = models.CharField(max_length=65)
     description = models.CharField(max_length=165)
     slug = models.SlugField(unique=True)
