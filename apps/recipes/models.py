@@ -1,7 +1,9 @@
 from tag.models import Tag
 from django.db import models
 from django.urls import reverse
+from collections import defaultdict
 from django.utils.text import slugify
+from django.forms import ValidationError
 from django.contrib.auth.models import User
 
 
@@ -73,15 +75,23 @@ class Recipe(models.Model):
         # ao sobreescrever retorna o que deveria tervindo
         return super().save(*args, **kwargs)
 
+    def clean(self, *args, **kwargs):
+        error_messages = defaultdict(list)
+
+        recipe_from_db = Recipe.objects.filter(
+            title__iexact=self.title
+        ).first()
+
+        if recipe_from_db:
+            if recipe_from_db.pk != self.pk:
+                error_messages['title'].append(
+                    'Found recipes with the same title'
+                )
+
+        if error_messages:
+            raise ValidationError(error_messages)
+
 
 # EDITED
-# title description slug
-# preparation_time preparation_time_unit
-# servings servings_unit
-# preparation_step
-# preparation_step_is_html
-# created_at updated_at
-# is_published
-# cover
 # category (Relação)
 # Author (Relação)
