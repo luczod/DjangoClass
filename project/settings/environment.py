@@ -18,6 +18,7 @@ if os.environ.get('DEBUG', None) is None:
     load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# maybe create error warning
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
