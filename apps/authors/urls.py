@@ -17,6 +17,11 @@ urlpatterns = [
         views.DashboardRecipe.as_view(),
         name='dashboard_recipe_edit'
     ),
+    path(
+        'profile/<int:id>/',
+        views.ProfileView.as_view(),
+        name='profile'
+    ),
     path('register/', views.register_view, name='register'),
     path('register/create/', views.register_create, name='create'),
     path('login/', views.login_view, name='login'),

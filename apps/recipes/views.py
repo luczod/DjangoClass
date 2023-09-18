@@ -59,10 +59,11 @@ class RecipeListViewBase(ListView):
             is_published=True,
         )
         # join in tables recipe,author and category to avoid n+1
-        qs = qs.select_related('author', 'category')
+        # qs = qs.select_related('author', 'category')
+        qs = qs.prefetch_related('author', 'category', 'author__profile')
         # in case many to many
         qs = qs.prefetch_related('tags')
-        # qs = qs.prefetch_related('author', 'category')
+
         return qs
 
     def get_context_data(self, *args, **kwargs):
