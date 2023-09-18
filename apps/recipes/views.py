@@ -1,18 +1,19 @@
 # from utis.recipes.factory import make_recipe
 import os
+from django.utils import translation
 from typing import Any, Dict
-from django.forms.models import model_to_dict
+from tag.models import Tag
+from .models import Recipe
+from django.db.models import Q
 from django.http import JsonResponse
+from django.http.response import Http404
+from django.db.models.aggregates import Count
+from django.views.generic import DetailView, ListView
+from django.forms.models import model_to_dict
 # from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404
-from django.db.models import Q
-from django.http.response import Http404
-from django.views.generic import DetailView, ListView
-from tag.models import Tag
 from utils.pagination import make_pagination
 # from django.contrib import messages
-from .models import Recipe
-from django.db.models.aggregates import Count
 
 
 PER_PAGE = int(os.environ.get('PER_PAGE', 6))
@@ -73,8 +74,15 @@ class RecipeListViewBase(ListView):
             ctx.get('recipes'),
             PER_PAGE
         )
+
+        html_language = translation.get_language()
+
         ctx.update(
-            {'recipes': page_obj, 'pagination_range': pagination_range}
+            {
+                'recipes': page_obj,
+                'pagination_range': pagination_range,
+                'html_language': html_language,
+            }
         )
         return ctx
 
