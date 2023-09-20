@@ -101,7 +101,7 @@ class Recipe(models.Model):
 
         if self.cover:
             try:
-                self.resize_image(self.cover, 800)
+                self.resize_image(self.cover, 840)
             except FileNotFoundError:
                 ...
 
