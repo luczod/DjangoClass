@@ -11,8 +11,8 @@ INSTALLED_APPS = [
     'recipes',
     'authors',
     'tag',
-    'tailwind',
-    'theme',
+    # 'tailwind',
+    # 'theme',
     'django_browser_reload'
 
 ]
